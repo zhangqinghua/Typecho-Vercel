@@ -9,12 +9,12 @@
  */
 header("Content-Type:text/html; charset=utf8");
 //localhost 为数据库地址 一般用默认的即可 或（127.0.0.1）
-$db_address = "localhost";
+$db_address = "sql.freedb.tech";
 //数据库用户名
-$db_username = "root";
+$db_username = "freedb_26716296";
 //数据库密码
-$db_password = "root";
+$db_password = "#?&A!%n9HHwcfZd";
 //数据库表名 （默认与数据库用户名相同）
-$db_name = "like";
+$db_name = "freedb_26716296";
 //敏感信息修改安全码 建议设置复杂一些
 $Like_Code = "likegirl";
