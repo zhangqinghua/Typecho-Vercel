@@ -55,11 +55,7 @@ class Mysql extends Pdo
             !empty($config->dsn)
                 ? $config->dsn : "mysql:dbname={$config->database};host={$config->host};port={$config->port}",
             $config->user,
-            $config->password,
-                        array(
-                \PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
-                \PDO::MYSQL_ATTR_SSL_CA => '/etc/pki/tls/certs/ca-bundle.crt',
-            )
+            $config->password
         );
         $pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 
