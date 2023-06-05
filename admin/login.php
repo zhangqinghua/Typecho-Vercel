@@ -1,58 +1,160 @@
-<?php
-include 'common.php';
+<!--
+ * @Author: Ki.
+ * @Date: 2022-12-21 07:35:43
+ * @LastEditors: Ki.
+ * @LastEditTime: 2022-12-21 07:51:06
+ * @Description: 花有重开日 人无再少年
+ * Copyright (c) 2022 by Ki All Rights Reserved. 
+-->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <title>后台管理登录_Like_Girl</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description"/>
+    <meta content="Coderthemes" name="author"/>
 
-if ($user->hasLogin()) {
-    $response->redirect($options->adminUrl);
-}
-$rememberName = Typecho_Cookie::get('__typecho_remember_name');
-if ($rememberName !== null && $rememberName !== '') {
-    $rememberName = htmlspecialchars($rememberName);
-}
+    <!-- App css -->
+    <link href="/admin/assets/css/icons.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/admin/assets/css/app.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/Style/css/loading.css" rel="stylesheet">
+</head>
 
-Typecho_Cookie::delete('__typecho_remember_name');
-
-$bodyClass = 'body-100';
-
-include 'header.php';
-?>
-<div class="typecho-login-wrap">
-    <div class="typecho-login">
-        <h1><a href="http://typecho.org" class="i-logo">Typecho</a></h1>
-        <form action="<?php $options->loginAction(); ?>" method="post" name="login" role="form">
-            <p>
-                <label for="name" class="sr-only"><?php _e('用户名'); ?></label>
-                <input type="text" id="name" name="name" value="<?php echo $rememberName; ?>" placeholder="<?php _e('用户名'); ?>" class="text-l w-100" autofocus />
-            </p>
-            <p>
-                <label for="password" class="sr-only"><?php _e('密码'); ?></label>
-                <input type="password" id="password" name="password" class="text-l w-100" placeholder="<?php _e('密码'); ?>" />
-            </p>
-            <p class="submit">
-                <button type="submit" class="btn btn-l w-100 primary"><?php _e('登录'); ?></button>
-                <input type="hidden" name="referer" value="<?php echo htmlspecialchars($request->get('referer')); ?>" />
-            </p>
-            <p>
-                <label for="remember"><input type="checkbox" name="remember" class="checkbox" value="1" id="remember" /> <?php _e('下次自动登录'); ?></label>
-            </p>
-        </form>
-        
-        <p class="more-link">
-            <a href="<?php $options->siteUrl(); ?>"><?php _e('返回首页'); ?></a>
-            <?php if($options->allowRegister): ?>
-            &bull;
-            <a href="<?php $options->registerUrl(); ?>"><?php _e('用户注册'); ?></a>
-            <?php endif; ?>
-        </p>
+<div id="Loadanimation" style="z-index:999999;">
+    <div id="Loadanimation-center">
+        <div id="Loadanimation-center-absolute">
+            <div class="xccx_object" id="xccx_four"></div>
+            <div class="xccx_object" id="xccx_three"></div>
+            <div class="xccx_object" id="xccx_two"></div>
+            <div class="xccx_object" id="xccx_one"></div>
+        </div>
     </div>
 </div>
-<?php 
-include 'common-js.php';
-?>
+<script src="../Style/jquery/jquery.min.js"></script>
 <script>
-$(document).ready(function () {
-    $('#name').focus();
-});
+    $(function () {
+        $("#Loadanimation").fadeOut(1000);
+    });
 </script>
-<?php
-include 'footer.php';
-?>
+
+<style>
+    .card {
+        border-radius: 15px;
+    }
+
+    .card-header.pt-4.pb-4.text-center.bg-primary {
+        border-radius: 15px 15px 0 0;
+    }
+
+    .btn-primary {
+        padding: 10px 25px;
+        border-radius: 20px;
+    }
+</style>
+
+<body class="authentication-bg">
+
+<div class="account-pages mt-5 mb-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5">
+                <div class="card">
+
+                    <!-- Logo -->
+                    <div class="card-header pt-4 pb-4 text-center bg-primary">
+                        <a href="##">
+                            <span style="color: #fff;font-size: 1.2rem;">Like_Girl __ Login</span>
+                        </a>
+                    </div>
+
+                    <div class="card-body p-4">
+
+                        <div class="text-center w-75 m-auto">
+                            <h4 class="text-dark-50 text-center mt-0 font-weight-bold">Like_Girl 5.0.0</h4>
+                            <p class="text-muted mb-4">花有重开日 人无再少年</p>
+                        </div>
+
+                        <form action="loginPost.php" method="post" onsubmit="return check()">
+
+                            <div class="form-group">
+                                <label for="emailaddress">User</label>
+                                <input name="adminName" class="form-control" type="text" id="emailaddress" required=""
+                                       placeholder="请输入用户名">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input name="pw" class="form-control" type="password" required="" id="password"
+                                       placeholder="请输入密码">
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="checkbox-signin" checked>
+                                    <label class="custom-control-label" for="checkbox-signin">记住密码</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-0 text-center">
+                                <button class="btn btn-primary" type="submit"> 登录后台</button>
+                            </div>
+
+                        </form>
+                    </div> <!-- end card-body -->
+                </div>
+                <!-- end card -->
+
+            </div>
+            <!-- end row -->
+
+        </div> <!-- end col -->
+    </div>
+    <!-- end row -->
+</div>
+<!-- end container -->
+</div>
+<!-- end page -->
+<script>
+    function check() {
+        //获取name数组中的第0个索引 并且去掉空格
+        let adminName = document.getElementsByName('adminName')[0].value.trim();
+        let pw = document.getElementsByName('pw')[0].value.trim();
+        // 判断adminName长度是否为0 如果为0则提示弹窗
+        if (adminName.length == 0) {
+            alert("请填写用户名");
+            return false;
+        } else if (pw.length == 0) {
+            alert("请填写密码");
+            return false;
+        }
+        let user = /[a-zA-Z0-9]/g;
+        let character = new RegExp("[`~!#$^&*()=|{}':;',\\[\\].<>/?~！#￥……&*（）——|{}【】‘；：”“'。，、？]");
+        if (character.test(adminName)) {
+            alert("用户名含有特殊字符 请重新输入")
+            return false;
+        }else if (!(user.test(adminName))) {
+            alert("用户名只支持数字 英文大小写字母")
+            return false;
+        }
+        
+        if (character.test(pw)) {
+            alert("密码含有特殊字符 请重新输入")
+            return false;
+        }
+        
+        
+
+    }
+
+</script>
+
+<footer class="footer footer-alt">
+    Copyright © 2022 Ki. && <a href="https://blog.kikiw.cn/index.php/archives/24/" target="_blank">Like_Girl</a> All
+    Rights Reserved.
+</footer>
+
+<!-- App js -->
+<script src="/admin/assets/js/app.min.js"></script>
+</body>
+</html>

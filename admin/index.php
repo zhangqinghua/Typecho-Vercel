@@ -1,197 +1,228 @@
 <?php
-include 'common.php';
-include 'header.php';
-include 'menu.php';
-include 'FreshUi.php';
-$stat = Typecho_Widget::widget('Widget_Stat');
+session_start();
 ?>
 
-
-<div class="page-header">
-  <h3 class="page-title">
-	<span class="page-title-icon bg-gradient-primary text-white mr-2">
-	  <i class="mdi mdi-account"></i>
-	</span>博客数据</h3>
+<?php
+include_once 'connect.php';
+$liuyan = "select * from leaving order by id desc limit 0,6";
+$resliuyan = mysqli_query($connect, $liuyan);
+?>
+<?php
+include_once 'Nav.php';
+?>
+<?php if ($login['user'] == $adminuser)  {?>
+<div class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <strong>Error - </strong> 当前账号为默认账号 请尽快修改！
 </div>
-<div class="row">
-  <div class="col-xl-3 col-md-6">
-	<div class="card bg-gradient-danger card-img-holder text-white">
-	  <div class="card-body">
-		<img src="img/circle.svg" class="card-img-absolute" alt="circle-image">
-		<h4 class="font-weight-normal mb-3">文章总计<i class="mdi mdi-library-books mdi-24px float-right"></i></h4>
-		<h2 class="mb-5"><a href="<?php $options->adminUrl('manage-posts.php'); ?>"><?php _e('<em>%s</em> 篇文章',$stat->myPublishedPostsNum); ?></a></h2>
-		<a class="mt-3 mb-0 text-sm">
-                                            <a href="<?php $options->adminUrl('write-post.php'); ?>" class="text-white"><i class="mdi mdi-pen"></i><?php _e('撰写新文章'); ?></a>
-                                            <a href="<?php $options->adminUrl('write-page.php'); ?>" class="text-white"><i class="mdi mdi-pen"></i><?php _e('创建新页面'); ?></a>
-                                        </a>
-                                   
-                              
-	  </div>
-	</div>
-  </div>
-  <div class="col-xl-3 col-md-6">
-	<div class="card bg-gradient-info card-img-holder text-white">
-	  <div class="card-body">
-		<img src="img/circle.svg" class="card-img-absolute" alt="circle-image">
-		<h4 class="font-weight-normal mb-3">评论总计<i class="mdi mdi-comment-processing-outline mdi-24px float-right"></i></h4>
-		<h2 class="mb-5"><a href="<?php $options->adminUrl('manage-comments.php'); ?>"><?php _e('<em>%s</em> 条评论',$stat->myPublishedCommentsNum); ?></a></h2>
-		<h6 class="card-text">
-			<?php if($user->pass('contributor', true)): ?>
-			<?php if($user->pass('editor', true) && 'on' == $request->get('__typecho_all_comments') && $stat->waitingCommentsNum > 0): ?>
-				<a style="color:#ffffff;" href="<?php $options->adminUrl('manage-comments.php?status=waiting'); ?>"><?php _e('待审核的评论'); ?></a>
-				<span class="balloon"><?php $stat->waitingCommentsNum(); ?></span>
-				
-			<?php elseif($stat->myWaitingCommentsNum > 0): ?>
-				<a style="color:#ffffff;" href="<?php $options->adminUrl('manage-comments.php?status=waiting'); ?>"><?php _e('待审核评论'); ?></a>
-				<span class="balloon"><?php $stat->myWaitingCommentsNum(); ?></span>
+<?php }?>
 
-			<?php endif; ?>
-			<?php if($user->pass('editor', true) && 'on' == $request->get('__typecho_all_comments') && $stat->spamCommentsNum > 0): ?>
-				<a style="color:#ffffff;" href="<?php $options->adminUrl('manage-comments.php?status=spam'); ?>"><?php _e('垃圾评论'); ?></a>
-				<span class="balloon"><?php $stat->spamCommentsNum(); ?></span>
-			<?php elseif($stat->mySpamCommentsNum > 0): ?>
-				<a style="color:#ffffff;" href="<?php $options->adminUrl('manage-comments.php?status=spam'); ?>"><?php _e('垃圾评论'); ?></a>
-				<span class="balloon"><?php $stat->mySpamCommentsNum(); ?></span>
-				
-			<?php endif; ?>
-			<?php endif; ?>
-		</h6><a href="<?php $options->adminUrl('manage-comments.php'); ?>" class="text-white mr-2"><i class="mdi mdi-basket"></i><?php _e('全部评论'); ?></a>
-                                            <a data-toggle="modal" data-target="#modal-default" href="<?php $options->adminUrl('options-reading.php'); ?>" class="text-white mr-2 "><i class="mdi mdi-book"></i><?php _e('阅读设置'); ?></a>			
-	  </div>
-	</div>
-  </div>
-  <div class="col-xl-3 col-md-6">
-	<div class="card bg-gradient-success card-img-holder text-white">
-	  <div class="card-body">
-		<img src="img/circle.svg" class="card-img-absolute" alt="circle-image">
-		<h4 class="font-weight-normal mb-3">分类总计<i class="mdi mdi-buffer mdi-24px float-right"></i></h4>
-		<h2 class="mb-5"><a href="<?php $options->adminUrl('manage-categories.php'); ?>"><?php _e('<em>%s</em> 个分类',$stat->categoriesNum); ?></a></h2>
-	 <a href="<?php $options->adminUrl('themes.php'); ?>" class="text-white"><i class="mdi mdi-palette"></i><?php _e('更换外观'); ?></a>
-                                            <a href="<?php $options->adminUrl('plugins.php'); ?>" class="text-white"><i class="mdi mdi-settings"></i><?php _e('插件管理'); ?></a>
-	  </div>
-	</div>
-  </div>
-  <div class="col-xl-3 col-md-6">
-	<div class="card bg-gradient-warning card-img-holder text-white">
-	  <div class="card-body">
-		<img src="img/circle.svg" class="card-img-absolute" alt="circle-image">
-		<h4 class="font-weight-normal mb-3">后台主题<i class="mdi mdi-buffer mdi-24px float-right"></i></h4>
-		<h2 class="mb-5">Fresh久别重逢</h3>
-	<a href="https://www.mlwly.cn/archives/fresh.html" class="text-white mr-2"><i class="mdi mdi-information"></i><?php _e('主题帮助'); ?></a>
-                                            <a href="<?php $options->adminUrl('plugins.php'); ?>" class="text-white"><i class="mdi mdi-settings"></i><?php _e('插件管理'); ?></a>
-	  </div>
-	</div>
-  </div>
-   <div class="col-md-4">
-      <div class="modal fade" id="modal-default" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
-    <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h6 class="modal-title" id="modal-title-default">更新内容</h6>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
+
+    <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <strong>Info - </strong> 已发现付费版本 LG_UI  <a style="color:#494949;" href="https://blog.kikiw.cn/index.php/archives/65/">点击查看文档</a> 作者新作品～
+    </div>
+
+<?php if ($login['pw'] == md5($adminpw))  {?>
+    <div class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <strong>Error - </strong> 当前密码为默认密码 请尽快修改！
+    </div>
+<?php }?>
+
+<div class="row">
+
+    <div class="col-md-6 col-xl-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-6">
+                        <h5 class="text-muted font-weight-normal mt-0 text-truncate" title="Campaign Sent">留言数量</h5>
+                        <h3 class="my-2 py-1"><?php echo $shu ?><i>条</i></h3>
+                        <p class="mb-0 text-muted">
+                            <span class="text-success mr-2"><i class="mdi mdi-arrow-up-bold"></i> 3.27%</span>
+                        </p>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-right">
+                            <div id="campaign-sent-chart"></div>
+                        </div>
+                    </div>
+                </div> <!-- end row-->
+            </div> <!-- end card-body -->
+        </div> <!-- end card -->
+    </div> <!-- end col -->
+
+    <div class="col-md-6 col-xl-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-6">
+                        <h5 class="text-muted font-weight-normal mt-0 text-truncate" title="New Leads">点点滴滴</h5>
+                        <h3 class="my-2 py-1"><?php echo $diannub ?><i>条</i></h3>
+                        <p class="mb-0 text-muted">
+                            <span class="text-danger mr-2"><i class="mdi mdi-arrow-down-bold"></i> 5.38%</span>
+                        </p>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-right">
+                            <div id="new-leads-chart"></div>
+                        </div>
+                    </div>
+                </div> <!-- end row-->
+            </div> <!-- end card-body -->
+        </div> <!-- end card -->
+    </div> <!-- end col -->
+
+    <div class="col-md-6 col-xl-4">
+        <div class="card">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-6">
+                        <h5 class="text-muted font-weight-normal mt-0 text-truncate" title="Deals">恋爱清单</h5>
+                        <h3 class="my-2 py-1"><?php echo $listnub ?><i>条</i></h3>
+                        <p class="mb-0 text-muted">
+                            <span class="text-success mr-2"><i class="mdi mdi-arrow-up-bold"></i> 4.87%</span>
+                        </p>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-right">
+                            <div id="deals-chart"></div>
+                        </div>
+                    </div>
+                </div> <!-- end row-->
+            </div> <!-- end card-body -->
+        </div> <!-- end card -->
+    </div> <!-- end col -->
+
+</div>
+<!-- end row -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row mb-2">
+                    <div class="col-lg-4">
+                        <div class="text-lg-right">
+                            <button type="button" class="btn btn-danger mb-2 mr-2"><i class="mdi mdi-basket mr-1"></i>
+                                最新留言
+                            </button>
+                        </div>
+                    </div><!-- end col-->
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-centered mb-0">
+                        <thead class="thead-light">
+                        <tr>
+                            <th style="width: 20px;">
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="customCheck1">
+                                    <label class="custom-control-label" for="customCheck1">&nbsp;</label>
+                                </div>
+                            </th>
+                            <th>评论内容</th>
+                            <th>Date</th>
+                            <th>Name</th>
+                            <th>QQ</th>
+                            <th>IP</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <?php
+                        while ($info = mysqli_fetch_array($resliuyan)) {
+                            ?>
+                            <tr>
+                                <td>
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox" class="custom-control-input" id="customCheck2">
+                                        <label class="custom-control-label" for="customCheck2">&nbsp;</label>
+                                    </div>
+                                </td>
+                                <td><?php echo $info['text'] ?></td>
+                                <td>
+                                    <small class="text-muted"><?php echo date('Y-m-d H:i:s', $info['time']) ?> <div class="color"><?php echo time_tran($info['time']) ?></div></small>
+                                </td>
+                                <td>
+                                    <h5><span class="badge badge-success-lighten"><i
+                                                    class="mdi mdi-account-circle mr-1 rihjt-0"></i> <?php echo $info['name'] ?></span>
+                                    </h5>
+                                </td>
+                                <td>
+                                    <?php echo $info['QQ'] ?>
+                                </td>
+                                <td>
+                                    <h5>
+                                        <span class="badge badge-danger-lighten"><?php if ($info['ip']) { ?><?php echo $info['ip'] ?><?php } else { ?>127.0.0.1<?php } ?></span>
+                                    </h5>
+                                </td>
+                            </tr>
+                            <?php
+                        }
+                        ?>
+
+                        </tbody>
+                    </table>
+                </div>
             </div>
-          <div class="modal-body">
-          <?php Typecho_Widget::widget('Widget_Options_Reading')->form()->render(); ?>
-            </div>
-            
-            <div class="modal-footer">
-                <button type="button" class="btn btn-link  ml-auto" data-dismiss="modal">关闭</button>
-            </div>
-            
         </div>
     </div>
 </div>
-  
-   </div>
-</div>
-<div class="page-header" style="padding-top:30px;">
-  <h3 class="page-title">
-	<span class="page-title-icon bg-gradient-primary text-white mr-2">
-	  <i class="mdi mdi-information-outline"></i>
-	</span>相关信息</h3>
-</div>
-<div class="row">
-  <div class="col-md-6 grid-margin stretch-card">
-	<div class="card">
-	  <div class="card-body">
-		<h4 class="card-title"><?php _e('最近发布的文章'); ?></h4>
-		<div class="table-responsive">
-		  <table class="table">
-			<thead>
-			  <tr>
-				<th> 日期 </th>
-				<th> 文章标题 </th>
-			  </tr>
-			</thead>
-			<tbody>
-			<?php Typecho_Widget::widget('Widget_Contents_Post_Recent', 'pageSize=10')->to($posts); ?>
-			<?php if($posts->have()): ?>
-			<?php while($posts->next()): ?>
-			  <tr>
-				<td><span class="text-warning"><?php $posts->date('m.d'); ?></span></td>
-				<td><a href="<?php $posts->permalink(); ?>" class="title"><?php $posts->title(); ?></a></td>
-			  </tr>
-			  <?php endwhile; ?>
-			  <?php else: ?>
-				<td><em><?php _e('暂时没有文章'); ?></em></td>
-			  <?php endif; ?>
-			</tbody>
-		  </table>
-		</div>
-	  </div>
-	</div>
-  </div>
-  <div class="col-md-6 grid-margin stretch-card">
-	<div class="card">
-	  <div class="card-body">
-		<h4 class="card-title"><?php _e('最近收到的回复'); ?></h4>
-		<div class="table-responsive">
-		  <table class="table">
-			<thead>
-			  <tr>
-				<th> 日期 </th>
-				<th> 昵称及评论内容 </th>
-			  </tr>
-			</thead>
-			<tbody>
-			<?php Typecho_Widget::widget('Widget_Comments_Recent', 'pageSize=10')->to($comments); ?>
-			<?php if($comments->have()): ?>
-			<?php while($comments->next()): ?>
-			  <tr>
-				<td><span class="text-warning"><?php $comments->date('m.d'); ?></span></td>
-				<td> <div class="d-flex w-100 align-items-center">
-                                                   <img src="
-                                                    <?php 
-                                                    $email =$comments->mail; 
-                                                    if($email){
-                                                        if(strpos($email,'@qq.com') !==false){$email=str_replace('@qq.com','',$email);
-                                                        echo '//q1.qlogo.cn/g?b=qq&nk='.$email.'&s=100';
-                                                        }else{
-                                                            $email= md5($email);
-                                                            echo Typecho_Common::gravatarUrl($comments->mail, 220, 'X', 'mm', $request->isSecure());}
-                                                    }else{
-                                                                echo '//cdn.v2ex.com/gravatar/null?';} ?>
-                                                    " alt="Image placeholder" class="avatar rounded-circle" style="width:35px;height:35px;margin-right:5px;">
-                                                    
-                                                   <?php $comments->author(true); ?>
-                                                </div><a href="<?php $comments->permalink(); ?>" class="title"></a><br />
-                            <?php $comments->excerpt(35, '...'); ?></td>
-			  </tr>
-			  <?php endwhile; ?>
-			  <?php else: ?>
-				<td><em><?php _e('暂时没有回复'); ?></em></td>
-			  <?php endif; ?>
-			</tbody>
-		  </table>
-		</div>
-	  </div>
-	</div>
-  </div>
-</div>
+
+<!-- Apex js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.6.12/apexcharts.min.js"></script>
+
+<!-- Todo js -->
+<script src="/admin/assets/js/ui/component.todo.js"></script>
+
+<!-- demo app -->
+<script src="/admin/assets/js/pages/demo.dashboard-crm.js"></script>
 <?php
-include 'copyright.php';
-include 'common-js.php';
-include 'footer.php';
+function time_tran($time) {
+	$text = '';
+	if(!$time) {
+		return $text;
+	}
+	$current = time();
+	$t = $current - $time;
+	$retArr = array('刚刚','秒前','分钟前','小时前','天前','月前','年前');
+	switch($t) {
+		case $t < 0://时间大于当前时间，返回格式化时间
+		$text = date('Y-m-d',$time);
+		break;
+		case $t == 0://刚刚
+		$text = $retArr[0];
+		break;
+		case $t < 60:// 几秒前
+		$text = $t.$retArr[1];
+		break;
+		case $t < 3600://几分钟前
+		$text = floor($t / 60).$retArr[2];
+		break;
+		case $t < 86400://几小时前
+		$text = floor($t / 3600).$retArr[3];
+		break;
+		case $t < 2592000: //几天前
+		$text = floor($t / 86400).$retArr[4];
+		break;
+		case $t < 31536000: //几个月前
+		$text = floor($t / 2592000).$retArr[5];
+		break;
+		default : //几年前
+		$text = floor($t / 31536000).$retArr[6];
+	}
+	return $text;
+}
 ?>
+<?php
+include_once 'Footer.php';
+?>
+
+</body>
+</html>
