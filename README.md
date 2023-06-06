@@ -6,6 +6,7 @@ Vercel 免费部署 Typecho 博客 | Vercel Free Deploy Typecho Blog
 
 使用读取环境变量的方式读取数据库信息
 
+演示站点[辣鸡小站](https://a26.top)
 
 | key          | Value                       |
 | ------------ | --------------------------- |
