@@ -8,6 +8,11 @@ Vercel 免费部署 Typecho 博客 | Vercel Free Deploy Typecho Blog
 
 演示站点[辣鸡小站](https://ty.a26.top)
 
+Typecho 1.2
+
+vercel-php@0.5.2
+
+
 | key          | Value                       |
 | ------------ | --------------------------- |
 |  HOST        | 数据库地址                  |
