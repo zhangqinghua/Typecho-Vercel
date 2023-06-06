@@ -1,4 +1,4 @@
-# Vercel-Typecho
+# Typecho-Vercel
 
 ![visitor_badge](https://visitor-badge.imlete.cn/?id=github.Lete114.Vercel-Typecho)
 
