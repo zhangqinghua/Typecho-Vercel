@@ -7,7 +7,7 @@ Vercel 免费部署 Typecho 博客 | Vercel Free Deploy Typecho Blog
 
 > **Warning**: 建议 fork 仓库后改为私有仓库，以免泄露自己的数据库**用户名**和**密码**，或者使用读取环境变量的方式读取数据库信息
 
-
+通过vercel拉取仓库后设置环境变量
 ```php
 /** 定义数据库参数 */
 $db = new Typecho_Db($_ENV["ADAPTER_NAME"], $_ENV["PREFIX"]);
