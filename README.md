@@ -10,7 +10,7 @@ Vercel 免费部署 Typecho 博客 | Vercel Free Deploy Typecho Blog
 
 Typecho 1.2
 
-vercel-php@0.5.2
+支持vercel-php@0.5.2
 
 
 | key          | Value                       |
