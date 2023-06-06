@@ -1,228 +1,155 @@
 <?php
-session_start();
+include 'common.php';
+include 'header.php';
+include 'menu.php';
+
+$stat = \Widget\Stat::alloc();
 ?>
+<div class="main">
+    <div class="container typecho-dashboard">
+        <?php include 'page-title.php'; ?>
+        <div class="row typecho-page-main">
+            <div class="col-mb-12 welcome-board" role="main">
+                <p><?php _e('目前有 <em>%s</em> 篇文章, 并有 <em>%s</em> 条关于你的评论在 <em>%s</em> 个分类中.',
+                        $stat->myPublishedPostsNum, $stat->myPublishedCommentsNum, $stat->categoriesNum); ?>
+                    <br><?php _e('点击下面的链接快速开始:'); ?></p>
 
-<?php
-include_once 'connect.php';
-$liuyan = "select * from leaving order by id desc limit 0,6";
-$resliuyan = mysqli_query($connect, $liuyan);
-?>
-<?php
-include_once 'Nav.php';
-?>
-<?php if ($login['user'] == $adminuser)  {?>
-<div class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-    <strong>Error - </strong> 当前账号为默认账号 请尽快修改！
-</div>
-<?php }?>
+                <ul id="start-link" class="clearfix">
+                    <?php if ($user->pass('contributor', true)): ?>
+                        <li><a href="<?php $options->adminUrl('write-post.php'); ?>"><?php _e('撰写新文章'); ?></a></li>
+                        <?php if ($user->pass('editor', true) && 'on' == $request->get('__typecho_all_comments') && $stat->waitingCommentsNum > 0): ?>
+                            <li>
+                                <a href="<?php $options->adminUrl('manage-comments.php?status=waiting'); ?>"><?php _e('待审核的评论'); ?></a>
+                                <span class="balloon"><?php $stat->waitingCommentsNum(); ?></span>
+                            </li>
+                        <?php elseif ($stat->myWaitingCommentsNum > 0): ?>
+                            <li>
+                                <a href="<?php $options->adminUrl('manage-comments.php?status=waiting'); ?>"><?php _e('待审核评论'); ?></a>
+                                <span class="balloon"><?php $stat->myWaitingCommentsNum(); ?></span>
+                            </li>
+                        <?php endif; ?>
+                        <?php if ($user->pass('editor', true) && 'on' == $request->get('__typecho_all_comments') && $stat->spamCommentsNum > 0): ?>
+                            <li>
+                                <a href="<?php $options->adminUrl('manage-comments.php?status=spam'); ?>"><?php _e('垃圾评论'); ?></a>
+                                <span class="balloon"><?php $stat->spamCommentsNum(); ?></span>
+                            </li>
+                        <?php elseif ($stat->mySpamCommentsNum > 0): ?>
+                            <li>
+                                <a href="<?php $options->adminUrl('manage-comments.php?status=spam'); ?>"><?php _e('垃圾评论'); ?></a>
+                                <span class="balloon"><?php $stat->mySpamCommentsNum(); ?></span>
+                            </li>
+                        <?php endif; ?>
+                        <?php if ($user->pass('administrator', true)): ?>
+                            <li><a href="<?php $options->adminUrl('themes.php'); ?>"><?php _e('更换外观'); ?></a></li>
+                            <li><a href="<?php $options->adminUrl('plugins.php'); ?>"><?php _e('插件管理'); ?></a></li>
+                            <li><a href="<?php $options->adminUrl('options-general.php'); ?>"><?php _e('系统设置'); ?></a>
+                            </li>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                    <!--<li><a href="<?php $options->adminUrl('profile.php'); ?>"><?php _e('更新我的资料'); ?></a></li>-->
+                </ul>
+            </div>
 
+            <div class="col-mb-12 col-tb-4" role="complementary">
+                <section class="latest-link">
+                    <h3><?php _e('最近发布的文章'); ?></h3>
+                    <?php \Widget\Contents\Post\Recent::alloc('pageSize=10')->to($posts); ?>
+                    <ul>
+                        <?php if ($posts->have()): ?>
+                            <?php while ($posts->next()): ?>
+                                <li>
+                                    <span><?php $posts->date('n.j'); ?></span>
+                                    <a href="<?php $posts->permalink(); ?>" class="title"><?php $posts->title(); ?></a>
+                                </li>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <li><em><?php _e('暂时没有文章'); ?></em></li>
+                        <?php endif; ?>
+                    </ul>
+                </section>
+            </div>
 
-    <div class="alert alert-success alert-dismissible bg-success text-white border-0 fade show" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <strong>Info - </strong> 已发现付费版本 LG_UI  <a style="color:#494949;" href="https://blog.kikiw.cn/index.php/archives/65/">点击查看文档</a> 作者新作品～
-    </div>
+            <div class="col-mb-12 col-tb-4" role="complementary">
+                <section class="latest-link">
+                    <h3><?php _e('最近得到的回复'); ?></h3>
+                    <ul>
+                        <?php \Widget\Comments\Recent::alloc('pageSize=10')->to($comments); ?>
+                        <?php if ($comments->have()): ?>
+                            <?php while ($comments->next()): ?>
+                                <li>
+                                    <span><?php $comments->date('n.j'); ?></span>
+                                    <a href="<?php $comments->permalink(); ?>"
+                                       class="title"><?php $comments->author(false); ?></a>:
+                                    <?php $comments->excerpt(35, '...'); ?>
+                                </li>
+                            <?php endwhile; ?>
+                        <?php else: ?>
+                            <li><?php _e('暂时没有回复'); ?></li>
+                        <?php endif; ?>
+                    </ul>
+                </section>
+            </div>
 
-<?php if ($login['pw'] == md5($adminpw))  {?>
-    <div class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade show" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <strong>Error - </strong> 当前密码为默认密码 请尽快修改！
-    </div>
-<?php }?>
-
-<div class="row">
-
-    <div class="col-md-6 col-xl-4">
-        <div class="card">
-            <div class="card-body">
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <h5 class="text-muted font-weight-normal mt-0 text-truncate" title="Campaign Sent">留言数量</h5>
-                        <h3 class="my-2 py-1"><?php echo $shu ?><i>条</i></h3>
-                        <p class="mb-0 text-muted">
-                            <span class="text-success mr-2"><i class="mdi mdi-arrow-up-bold"></i> 3.27%</span>
-                        </p>
+            <div class="col-mb-12 col-tb-4" role="complementary">
+                <section class="latest-link">
+                    <h3><?php _e('官方最新日志'); ?></h3>
+                    <div id="typecho-message">
+                        <ul>
+                            <li><?php _e('读取中...'); ?></li>
+                        </ul>
                     </div>
-                    <div class="col-6">
-                        <div class="text-right">
-                            <div id="campaign-sent-chart"></div>
-                        </div>
-                    </div>
-                </div> <!-- end row-->
-            </div> <!-- end card-body -->
-        </div> <!-- end card -->
-    </div> <!-- end col -->
-
-    <div class="col-md-6 col-xl-4">
-        <div class="card">
-            <div class="card-body">
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <h5 class="text-muted font-weight-normal mt-0 text-truncate" title="New Leads">点点滴滴</h5>
-                        <h3 class="my-2 py-1"><?php echo $diannub ?><i>条</i></h3>
-                        <p class="mb-0 text-muted">
-                            <span class="text-danger mr-2"><i class="mdi mdi-arrow-down-bold"></i> 5.38%</span>
-                        </p>
-                    </div>
-                    <div class="col-6">
-                        <div class="text-right">
-                            <div id="new-leads-chart"></div>
-                        </div>
-                    </div>
-                </div> <!-- end row-->
-            </div> <!-- end card-body -->
-        </div> <!-- end card -->
-    </div> <!-- end col -->
-
-    <div class="col-md-6 col-xl-4">
-        <div class="card">
-            <div class="card-body">
-                <div class="row align-items-center">
-                    <div class="col-6">
-                        <h5 class="text-muted font-weight-normal mt-0 text-truncate" title="Deals">恋爱清单</h5>
-                        <h3 class="my-2 py-1"><?php echo $listnub ?><i>条</i></h3>
-                        <p class="mb-0 text-muted">
-                            <span class="text-success mr-2"><i class="mdi mdi-arrow-up-bold"></i> 4.87%</span>
-                        </p>
-                    </div>
-                    <div class="col-6">
-                        <div class="text-right">
-                            <div id="deals-chart"></div>
-                        </div>
-                    </div>
-                </div> <!-- end row-->
-            </div> <!-- end card-body -->
-        </div> <!-- end card -->
-    </div> <!-- end col -->
-
-</div>
-<!-- end row -->
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-body">
-                <div class="row mb-2">
-                    <div class="col-lg-4">
-                        <div class="text-lg-right">
-                            <button type="button" class="btn btn-danger mb-2 mr-2"><i class="mdi mdi-basket mr-1"></i>
-                                最新留言
-                            </button>
-                        </div>
-                    </div><!-- end col-->
-                </div>
-
-                <div class="table-responsive">
-                    <table class="table table-centered mb-0">
-                        <thead class="thead-light">
-                        <tr>
-                            <th style="width: 20px;">
-                                <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="customCheck1">
-                                    <label class="custom-control-label" for="customCheck1">&nbsp;</label>
-                                </div>
-                            </th>
-                            <th>评论内容</th>
-                            <th>Date</th>
-                            <th>Name</th>
-                            <th>QQ</th>
-                            <th>IP</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <?php
-                        while ($info = mysqli_fetch_array($resliuyan)) {
-                            ?>
-                            <tr>
-                                <td>
-                                    <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" id="customCheck2">
-                                        <label class="custom-control-label" for="customCheck2">&nbsp;</label>
-                                    </div>
-                                </td>
-                                <td><?php echo $info['text'] ?></td>
-                                <td>
-                                    <small class="text-muted"><?php echo date('Y-m-d H:i:s', $info['time']) ?> <div class="color"><?php echo time_tran($info['time']) ?></div></small>
-                                </td>
-                                <td>
-                                    <h5><span class="badge badge-success-lighten"><i
-                                                    class="mdi mdi-account-circle mr-1 rihjt-0"></i> <?php echo $info['name'] ?></span>
-                                    </h5>
-                                </td>
-                                <td>
-                                    <?php echo $info['QQ'] ?>
-                                </td>
-                                <td>
-                                    <h5>
-                                        <span class="badge badge-danger-lighten"><?php if ($info['ip']) { ?><?php echo $info['ip'] ?><?php } else { ?>127.0.0.1<?php } ?></span>
-                                    </h5>
-                                </td>
-                            </tr>
-                            <?php
-                        }
-                        ?>
-
-                        </tbody>
-                    </table>
-                </div>
+                </section>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Apex js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.6.12/apexcharts.min.js"></script>
-
-<!-- Todo js -->
-<script src="/admin/assets/js/ui/component.todo.js"></script>
-
-<!-- demo app -->
-<script src="/admin/assets/js/pages/demo.dashboard-crm.js"></script>
 <?php
-function time_tran($time) {
-	$text = '';
-	if(!$time) {
-		return $text;
-	}
-	$current = time();
-	$t = $current - $time;
-	$retArr = array('刚刚','秒前','分钟前','小时前','天前','月前','年前');
-	switch($t) {
-		case $t < 0://时间大于当前时间，返回格式化时间
-		$text = date('Y-m-d',$time);
-		break;
-		case $t == 0://刚刚
-		$text = $retArr[0];
-		break;
-		case $t < 60:// 几秒前
-		$text = $t.$retArr[1];
-		break;
-		case $t < 3600://几分钟前
-		$text = floor($t / 60).$retArr[2];
-		break;
-		case $t < 86400://几小时前
-		$text = floor($t / 3600).$retArr[3];
-		break;
-		case $t < 2592000: //几天前
-		$text = floor($t / 86400).$retArr[4];
-		break;
-		case $t < 31536000: //几个月前
-		$text = floor($t / 2592000).$retArr[5];
-		break;
-		default : //几年前
-		$text = floor($t / 31536000).$retArr[6];
-	}
-	return $text;
-}
-?>
-<?php
-include_once 'Footer.php';
+include 'copyright.php';
+include 'common-js.php';
 ?>
 
-</body>
-</html>
+<script>
+    $(document).ready(function () {
+        var ul = $('#typecho-message ul'), cache = window.sessionStorage,
+            html = cache ? cache.getItem('feed') : '',
+            update = cache ? cache.getItem('update') : '';
+
+        if (!!html) {
+            ul.html(html);
+        } else {
+            html = '';
+            $.get('<?php $options->index('/action/ajax?do=feed'); ?>', function (o) {
+                for (var i = 0; i < o.length; i++) {
+                    var item = o[i];
+                    html += '<li><span>' + item.date + '</span> <a href="' + item.link + '" target="_blank">' + item.title
+                        + '</a></li>';
+                }
+
+                ul.html(html);
+                cache.setItem('feed', html);
+            }, 'json');
+        }
+
+        function applyUpdate(update) {
+            if (update.available) {
+                $('<div class="update-check message error"><p>'
+                    + '<?php _e('您当前使用的版本是 %s'); ?>'.replace('%s', update.current) + '<br />'
+                    + '<strong><a href="' + update.link + '" target="_blank">'
+                    + '<?php _e('官方最新版本是 %s'); ?>'.replace('%s', update.latest) + '</a></strong></p></div>')
+                    .insertAfter('.typecho-page-title').effect('highlight');
+            }
+        }
+
+        if (!!update) {
+            applyUpdate($.parseJSON(update));
+        } else {
+            $.get('<?php $options->index('/action/ajax?do=checkVersion'); ?>', function (o, status, resp) {
+                applyUpdate(o);
+                cache.setItem('update', resp.responseText);
+            }, 'json');
+        }
+    });
+
+</script>
+<?php include 'footer.php'; ?>
