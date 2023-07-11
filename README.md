@@ -1,6 +1,6 @@
 # Vercel-Typecho
 
-[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/pbloods/typecho/)
+[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/26716296/Typecho-Vercel/)
 
 Vercel 免费部署 Typecho 博客 | Vercel Free Deploy Typecho Blog
 
