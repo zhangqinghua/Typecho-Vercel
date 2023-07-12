@@ -35,13 +35,20 @@ Typecho_Common::init();
 /** 定义数据库参数 */
 $db=new Typecho_Db('Pdo_Mysql','typecho_');
 $db->addServer(array (
-    'host' => $_ENV["HOST"],
-    'user' => $_ENV["USERNAME"],
-    'password' => $_ENV["PASSWORD"],
-    'charset' => $_ENV["CHARSET"],
-    'port' => $_ENV["PORT"],
-    'database' => $_ENV["DATABASE"],
-    'engine' => $_ENV["ENGINE"],
+   'host' => 'hk-cdb-hbgfyvc9.sql.tencentcdb.com',
+   'port' => 63985,
+   'user' => 'root',
+   'password' => 'Qw385613',
+   'charset' => 'utf8mb4',
+   'database' => 'typecho',
+   'engine' => 'InnoDB',
+    // 'host' => $_ENV["HOST"],
+    // 'user' => $_ENV["USERNAME"],
+    // 'password' => $_ENV["PASSWORD"],
+    // 'charset' => $_ENV["CHARSET"],
+    // 'port' => $_ENV["PORT"],
+    // 'database' => $_ENV["DATABASE"],
+    // 'engine' => $_ENV["ENGINE"],
   ), Typecho_Db::READ | Typecho_Db::WRITE);
   Typecho_Db::set($db);
   
